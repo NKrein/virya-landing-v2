@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Virya — Landing v2
 
-## Getting Started
+Landing de **Virya Marketing Studio**. Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
+La v1 reproduce fielmente el diseño original (ver [docs/design-system.md](docs/design-system.md)); las siguientes versiones mejoran diseño, interacciones y transiciones sobre esta base.
 
-First, run the development server:
+## Comandos
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # desarrollo en http://localhost:3000
+npm run build   # build de producción (la página es 100% estática)
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Este Next.js tiene cambios respecto de versiones anteriores: ante la duda, leé `node_modules/next/dist/docs/` (ver `AGENTS.md`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estructura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/                 layout (fuentes, metadata), page (compone secciones), globals.css, icon.svg
+  styles/tokens.css    TOKENS: colores, tipografía, radios, sombras, espaciado, movimiento
+  content/             LITERALES: un archivo por sección (+ site, nav, offers, forms)
+  components/
+    ui/                piezas reutilizables (Button, Chip, Folio, GrainOverlay, Stamp…)
+    sections/          una carpeta/archivo por sección de la página
+    forms/             ConversationalForm (formulario de una pregunta por vez)
+  lib/                 sections.ts (registro/orden), mailto, format, submit-form
+docs/                  guías: tokens, content, sections, design-system
+```
 
-## Learn More
+## Cambios habituales
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Quiero… | Dónde |
+|---|---|
+| Cambiar un color, tipografía, radio, duración | `src/styles/tokens.css` → [docs/tokens.md](docs/tokens.md) |
+| Cambiar copy de una sección | `src/content/<seccion>.ts` → [docs/content.md](docs/content.md) |
+| Agregar, quitar o reordenar una sección | `src/lib/sections.ts` → [docs/sections.md](docs/sections.md) |
+| Conectar formularios / pagos / reservas | [docs/design-system.md](docs/design-system.md#pendientes-de-negocio) |

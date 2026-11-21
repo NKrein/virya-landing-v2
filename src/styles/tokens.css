@@ -1,0 +1,122 @@
+/*
+ * Virya — design tokens (única fuente de verdad).
+ *
+ * Todo valor visual reutilizable vive acá. Los componentes no deben llevar
+ * hex, tamaños ni duraciones sueltos: usan estas variables, ya sea con las
+ * utilidades de Tailwind (bg-tinta, text-terracota, rounded-md, font-display…)
+ * o con var(--token) en CSS.
+ *
+ * Criterios de uso y reglas de diseño: docs/design-system.md
+ */
+
+@theme {
+  /* ── Colores base (Tailwind: bg-tinta, text-terracota, border-line…) ── */
+  --color-*: initial;
+  --color-blanco: #ffffff; /* Base (~75%) */
+  --color-tinta: #292521; /* Protagonista oscura (~17%) */
+  --color-terracota: #9a4f37; /* Acento (~8%) */
+  --color-crema: #f6eee6; /* Tonos "off" para piezas chicas, nunca texto */
+  --color-terracota-off: #efdcd3;
+  --color-tinta-off: #e7e4e0;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* ── Colores semánticos (derivados de tinta / blanco) ── */
+  --color-line: rgb(41 37 33 / 0.15); /* líneas finas entre secciones */
+  --color-line-soft: rgb(41 37 33 / 0.2); /* separadores de listas */
+  --color-line-chip: rgb(41 37 33 / 0.3); /* borde de chips */
+  --color-ink-muted: rgb(41 37 33 / 0.6);
+  --color-ink-faint: rgb(41 37 33 / 0.45); /* texto tachado */
+  --color-on-ink-line: rgb(255 255 255 / 0.3); /* líneas sobre tinta */
+  --color-on-ink-line-soft: rgb(255 255 255 / 0.25);
+  --color-on-ink-dashed: rgb(255 255 255 / 0.4);
+  --color-on-ink-surface: rgb(255 255 255 / 0.06);
+  --color-on-ink-muted: rgb(255 255 255 / 0.7);
+  --color-on-ink-subtle: rgb(255 255 255 / 0.8);
+  --color-on-ink-faint: rgb(255 255 255 / 0.6);
+  --color-on-ink-track: rgb(255 255 255 / 0.3); /* pista de progreso de historias */
+  --color-on-ink-outline: rgb(255 255 255 / 0.5);
+  --color-terracota-tape: rgb(154 79 55 / 0.24); /* cinta washi */
+  --color-terracota-wash: rgb(154 79 55 / 0.08);
+  --color-seen-ring: rgb(41 37 33 / 0.25); /* aro de historia vista */
+
+  /* ── Familias tipográficas (las variables --font-* las inyecta next/font en layout.tsx) ── */
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-hand: var(--font-caveat), cursive;
+
+  /* ── Escala tipográfica del design system (tokens.json) ── */
+  --text-display-xl: 72px;
+  --text-display-xl--line-height: 76px;
+  --text-display-l: 48px;
+  --text-display-l--line-height: 54px;
+  --text-display-m: 32px;
+  --text-display-m--line-height: 38px;
+  --text-body-l: 18px;
+  --text-body-l--line-height: 28px;
+  --text-body: 16px;
+  --text-body--line-height: 26px;
+  --text-label: 12px;
+  --text-label--line-height: 16px;
+  --text-annotation: 26px;
+  --text-annotation--line-height: 30px;
+
+  /* ── Radios ── */
+  --radius-sm: 4px; /* etiquetas e inputs */
+  --radius-md: 8px; /* tarjetas, botones, imágenes */
+  --radius-full: 999px; /* pills e isotipo circular */
+
+  /* ── Sombras ── */
+  --shadow-paper: 0 1px 2px rgb(41 37 33 / 0.08), 0 6px 18px -12px rgb(41 37 33 / 0.25);
+  --shadow-tablet: 0 2px 3px rgb(41 37 33 / 0.15), 0 22px 40px -18px rgb(41 37 33 / 0.55);
+
+  /* ── Movimiento ── */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ── Breakpoint único: mobile first, desktop desde 900px (utilidad: desk:) ── */
+  --breakpoint-*: initial;
+  --breakpoint-desk: 900px;
+}
+
+:root {
+  /* ── Espaciado del design system ── */
+  --space-1: 8px; /* entre elementos relacionados */
+  --space-2: 16px; /* padding de tarjetas chicas y gaps */
+  --space-3: 24px; /* padding de tarjetas y bloques */
+  --space-4: 48px; /* entre secciones y márgenes de posts */
+
+  /* ── Layout ── */
+  --wrap-max: 1240px;
+  --gutter: 20px;
+  --gutter-desk: 56px;
+  --section-pt: 44px;
+  --section-pb: 48px;
+  --section-pt-desk: 72px;
+  --section-pb-desk: 80px;
+  --phone-width: 390px;
+
+  /* ── Tipografía fluida de la landing ── */
+  --fs-h1: 2.6rem;
+  --lh-h1: 1;
+  --fs-h1-desk: clamp(3.5rem, 5.6vw, 5rem);
+  --fs-h2: 2.1rem;
+  --lh-h2: 1.04;
+  --fs-h2-desk: clamp(2.5rem, 3.6vw, 3.25rem);
+  --disp-tracking: -0.025em;
+  --disp-variation: "SOFT" 50, "WONK" 1;
+
+  /* ── Movimiento (duraciones) ── */
+  --dur-hover: 0.3s;
+  --dur-step: 0.45s;
+  --dur-story: 0.35s;
+  --dur-spin: 30s;
+  --dur-pulse: 2.4s;
+  --dur-fill: 1.4s;
+  --dur-draw: 0.9s;
+
+  /* ── Textura de papel ── */
+  --grain-opacity: 0.5;
+  --grain-opacity-tex: 0.4;
+}
