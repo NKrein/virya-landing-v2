@@ -1,11 +1,8 @@
 import type { ComponentType } from "react";
 import { AnnouncementBar } from "@/components/sections/AnnouncementBar";
+import { AntesDeIrte } from "@/components/sections/AntesDeIrte";
 import { Footer } from "@/components/sections/Footer";
-import { Hero } from "@/components/sections/hero/Hero";
-import { MarketingEnOrden } from "@/components/sections/MarketingEnOrden";
-import { Presupuesto } from "@/components/sections/Presupuesto";
-import { QuienesSomos } from "@/components/sections/QuienesSomos";
-import { Workbook } from "@/components/sections/Workbook";
+import { Tiles } from "@/components/stage/Tiles";
 
 export type SectionEntry = {
   id: string;
@@ -15,16 +12,15 @@ export type SectionEntry = {
 };
 
 /**
- * Registro de secciones: el ORDEN de este array es el orden en la página.
- * Para agregar una sección: crear su componente + su archivo en src/content/
- * y sumar una entrada acá. Ver docs/sections.md.
+ * Registro de bloques de la página: el ORDEN de este array es el orden en la página.
+ * El hero y las secciones de contenido viven dentro del escenario de tiles: el
+ * orden y la tapa de cada tile se definen en src/content/tiles.ts y se conectan
+ * en src/components/stage/Tiles.tsx.
+ * Ver docs/sections.md.
  */
 export const sections: readonly SectionEntry[] = [
   { id: "announcement", slot: "top", Component: AnnouncementBar },
-  { id: "hero", slot: "top", Component: Hero },
-  { id: "workbook", slot: "main", Component: Workbook },
-  { id: "marketing-en-orden", slot: "main", Component: MarketingEnOrden },
-  { id: "presupuesto", slot: "main", Component: Presupuesto },
-  { id: "quienes-somos", slot: "main", Component: QuienesSomos },
+  { id: "tiles", slot: "main", Component: Tiles },
+  { id: "antes-de-irte", slot: "bottom", Component: AntesDeIrte },
   { id: "footer", slot: "bottom", Component: Footer },
 ];

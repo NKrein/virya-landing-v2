@@ -1,6 +1,6 @@
-/** N.º 04 — Quiénes somos. */
+/** N.º 05 — Quiénes somos. */
 export const quienesSomos = {
-  folio: { number: "N.º 04", label: "Quiénes somos" },
+  folio: { number: "N.º 05", label: "Quiénes somos" },
   title: "Un equipo, tres especialidades.",
   items: [
     { n: "01", title: "Marketing digital", text: "Estrategia, email marketing y Meta Ads." },

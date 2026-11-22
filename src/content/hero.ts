@@ -1,6 +1,6 @@
 import { site } from "./site";
 
-/** Hero: titular + mockup de Instagram con historias destacadas. */
+/** Hero: titular + celular con el perfil y la grilla de tiles (ver tiles.ts). */
 export const hero = {
   folio: "Virya Marketing Studio",
   title: {
@@ -11,24 +11,11 @@ export const hero = {
   subtitle: "Elegí dónde estás hoy y te mostramos por dónde empezar.",
   stampAlt: site.name,
 
+  /** Cabecera del perfil dentro del celular; se pliega cuando el celular crece. */
   phone: {
     profileName: site.wordmark.text,
     profileRole: site.tagline,
-    bio: "Mirá las historias destacadas: hay una para cada momento de tu negocio",
-    highlightsAriaLabel: "Historias destacadas: elegí tu situación",
-    highlightAria: "Escalón {n}: {situ}",
-    hint: "tocá una historia",
-    tiles: [
-      { tone: "terracota-off", text: "No necesitás publicar más." },
-      { tone: "tinta-off", text: "Necesitás un sistema: sostenible y que convierta." },
-    ],
-  },
-
-  story: {
-    region: "Historia: escalón {n} de {total}, {name}",
-    step: "Escalón {n} de {total}",
-    close: "Cerrar historia",
-    prev: "Escalón anterior",
-    next: "Escalón siguiente",
+    bio: "Cada post es una parte de lo que hacemos. Deslizá o tocá uno.",
+    ariaLabel: "Perfil de Virya: grilla de secciones",
   },
 } as const;

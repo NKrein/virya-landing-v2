@@ -2,9 +2,9 @@ import { href } from "./anchors";
 import { budgetMailto } from "./site";
 import { getOffer } from "./offers";
 
-/** N.º 02 — Marketing en orden (servicio mensual, bloque tinta). */
+/** N.º 03 — Marketing en orden (servicio mensual, bloque tinta). */
 export const marketingEnOrden = {
-  folio: { number: "N.º 02", label: "Servicio mensual", note: "cupos limitados" },
+  folio: { number: "N.º 03", label: "Servicio mensual", note: "cupos limitados" },
   title: "Marketing en orden.",
   hook: "¿Tus redes te piden más tiempo del que tenés? ¿No sabés bien qué publicar?",
   lead: "Armamos tu estrategia y la llevamos adelante con vos, mes a mes.",

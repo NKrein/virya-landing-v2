@@ -1,18 +1,23 @@
 # Sistema de diseño y decisiones de diseño
 
-Documento de referencia del diseño original de Virya (v10, "landing clásica"), que reemplaza al prototipo que vivía en `src/web-design-reference/`. Los valores concretos están en [`src/styles/tokens.css`](../src/styles/tokens.css); el copy, en [`src/content/`](../src/content); el layout, en los componentes.
+Documento de referencia del diseño de Virya. La base visual (color, tipografía, logo, textura) es la del diseño original (v10, "landing clásica"); la estructura y las interacciones son las del **escenario de tiles** (v3, ver más abajo). Los valores concretos están en [`src/styles/tokens.css`](../src/styles/tokens.css); el copy, en [`src/content/`](../src/content); el layout, en los componentes.
 
 ## Estructura de la página (de arriba a abajo)
-1. **Barra superior** (tinta): anuncio del workbook, lleva a su sección.
-2. **Menú**: wordmark, links a Workbook, Marketing en orden y Auditoría gratis, botón "Escribinos" (`mailto`). En mobile solo wordmark + "Escribinos".
-3. **Hero**: titular con tachado y mockup de Instagram con historias destacadas y grilla decorativa de 3 cuadros.
-4. **N.º 01 Workbook**: tablet con la tapa, chips, desplegable de módulos, precio de lanzamiento y botón de compra.
-5. **N.º 02 Marketing en orden** (bloque tinta): gancho, "Qué incluye", tarjeta de presupuesto y tarjeta de sesión estratégica.
-6. **N.º 03 Proyectos a medida**: chips y formulario conversacional en "hoja de papel" con cinta.
-7. **N.º 04 Quiénes somos**: tres especialidades numeradas.
-8. **Footer** (tinta): newsletter + mini auditoría (formulario de 2 pasos), wordmark y contacto.
+1. **Barra superior** (tinta): anuncio del workbook, lleva a su tile.
+2. **Escenario de tiles** (un solo bloque fijo mientras se scrollea):
+   - **Hero**: menú, titular con tachado y un **celular** con el perfil de Instagram (avatar, bio, historias destacadas) y la **grilla de 6 tiles**.
+   - Con el scroll, el celular crece hasta que la grilla ocupa la pantalla.
+   - Cada tile es una sección que se abre, se lee y se vuelve a cerrar:
+     - **N.º 01 Auditoría gratis** (tinta): newsletter + mini auditoría.
+     - **N.º 02 Workbook**: tablet con la tapa, chips, módulos, precio y compra.
+     - **N.º 03 Marketing en orden** (tinta): servicio mensual + sesión estratégica.
+     - **N.º 04 Proyectos a medida**: chips + formulario conversacional en "hoja de papel".
+     - **N.º 05 Quiénes somos**: tres especialidades.
+     - **06 virya.**: tile de marca (estampilla); no abre, lleva a "Antes de irte".
+3. **Antes de irte** (tinta): newsletter + mini auditoría, para quien llegó al final.
+4. **Footer** (tinta, unido al anterior por una línea fina): wordmark y contacto.
 
-Cada sección abre con un **folio** editorial: línea fina, "N.º 0X", nombre y nota en Caveat.
+Cada sección abre con un **folio** editorial: línea fina, "N.º 0X", nombre y nota en Caveat. Con la tile abierta, arriba del folio va el encabezado de marca (isotipo + wordmark).
 
 ## Color
 Paleta mínima de tres: **blanco** (base, ~75%), **tinta** (protagonista oscura, ~17%) y **terracota** (acento, ~8%). Más tres tonos "off" para piezas chicas.
@@ -39,7 +44,8 @@ Reglas:
 Escala del design system (`--text-*` en tokens): display-xl 72/76, display-l 48/54, display-m 32/38, body-l 18/28, body 16/26, label 12/16 (700), annotation 26/30 (500). Espaciado: 8 / 16 / 24 / 48. Radios: 4 (etiquetas, inputs), 8 (tarjetas, botones, imágenes), 999 (pills, isotipo).
 
 ## Logo
-- Wordmark `virya.`: Fraunces 600, tinta, con el punto en terracota.
+- Wordmark `virya.`: Fraunces 600, tinta, con el punto en terracota. Como SVG en `public/assets/virya-logo.svg` y como componente [`Wordmark`](../src/components/ui/Wordmark.tsx) (las letras toman el color del texto, así sirve sobre tinta).
+- Isotipo (V en círculo terracota, `public/assets/virya-isotipo.svg`): encabezado de las tiles abiertas, junto al wordmark, y marca del 06 en el riel.
 - La **estampilla** terracota (`public/assets/estampilla.svg`) es el único logo redondo: foto de perfil, avatar, sello del hero y favicon.
 - El wordmark **nunca** va junto a la estampilla.
 
@@ -48,15 +54,80 @@ Filtro SVG `feTurbulence` aplicado con `mix-blend-mode: multiply` sobre blanco y
 
 ## Responsive
 - Mobile first a **390px**, gutter lateral de 20px.
-- Breakpoint único en **900px** (`desk:`): el hero pasa a dos columnas, el celular se enmarca como teléfono de 390px y el gutter sube a 56px.
+- Breakpoint único en **900px** (`desk:`). Desde ahí:
+  - el hero pasa a dos columnas;
+  - la grilla de tiles pasa de 2 × 3 a 3 × 2;
+  - el testigo pasa de barra superior a riel lateral;
+  - el gutter sube a 56px.
+- El celular tiene proporción de teléfono (pantalla 9:19,5) y altura fija; se achica solo si la pantalla no alcanza. Dentro, la grilla usa celdas 3:4 como el perfil de Instagram.
 - Todos los objetivos táctiles miden **44px o más**.
 
+## Escenario de tiles (v3)
+Código en [`src/components/stage/`](../src/components/stage). Todo se maneja con el scroll; un click en una tile, una historia, el riel o un link con ancla abre directo esa tile.
+
+### Recorrido
+Un track alto con un escenario `sticky` de 100dvh. Las paradas, en orden, son:
+1. **Hero.**
+2. **Celular completo** (solo mobile): una parada intermedia.
+3. **Grilla a pantalla completa.**
+4. Por cada tile:
+   - **inicio de lectura**;
+   - **final del contenido** (si es más largo que la pantalla);
+   - **grilla otra vez**.
+5. **Final de la página** ("Antes de irte" + footer).
+
+La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolveStage.ts) (qué tile está abierta según el scroll, con histéresis) y en [`introGeometry.ts`](../src/components/stage/introGeometry.ts) (dónde está el celular en cada momento de la intro).
+
+### Movimiento
+- **Intro (sigue al scroll):**
+  - Desktop: el celular crece desde la columna derecha hasta que su pantalla, que **es** la grilla, ocupa todo. El texto del hero se va, el perfil se pliega y el marco se desvanece.
+  - Mobile: del celular asoma el perfil, las historias y un tercio de la primera fila. Sube, se detiene completo y después pasa a pantalla completa.
+- **Apertura (duración fija, ~0,5 s):** la tile crece desde su celda hasta la pantalla (layout compartido de Motion). El color va del tono de la tapa al fondo del panel y el título viaja. El contenido real entra al mismo ritmo, revelado por un recorte que crece con la tile.
+- **Cierre (~0,42 s, más corto que la apertura):** el contenido se va y la tile vuelve a su celda, sin pasarse. Si se saltean varias tiles, el cierre es corto (0,25 s) y no se reproducen las intermedias.
+- **Lectura:** el contenido de la tile abierta se desplaza 1:1 con el scroll nativo; no hay scroll interno.
+- Curvas y duraciones: tokens `--dur-tile-*` y su espejo en [`src/lib/motion.ts`](../src/lib/motion.ts). Aperturas y cierres son springs sin rebote: orgánicos y predecibles.
+
+### Scroll "un gesto, una parada"
+[`useStepScroll.ts`](../src/components/stage/useStepScroll.ts):
+- El scroll es nativo (inercia, teclado, barra), pero un gesto no pasa de largo la parada siguiente.
+- Si el usuario suelta entre dos paradas, el recorrido termina en la dirección en que venía; si se movió menos de ~6% de pantalla, vuelve.
+- Varios gestos seguidos avanzan una parada cada uno.
+- Dentro de una lectura larga y después del escenario, el scroll es libre.
+- Reemplaza a `scroll-snap` (`mandatory` + `snap-stop`), que en la práctica no garantiza detenerse en cada parada.
+
+### Testigo de posición
+- **Desktop: riel lateral derecho.**
+  - Una marca por tile; la activa se alarga y muestra su nombre, y se llena con la lectura.
+  - El 06 lleva el isotipo.
+  - Es del **color opuesto** al panel abierto: oscuro sobre blanco, claro sobre tinta.
+  - Debajo de la lista, en el mismo contenedor, va el aviso "Deslizá para seguir".
+  - El contenido deja libre a la derecha `--rail-safe` (232px) para que el riel y su etiqueta nunca lo tapen.
+- **Mobile: barra superior a todo el ancho.** Segmentos tipo historias y "N.º 02 · Workbook". Con una tile abierta es opaca, del tono del panel. El aviso de scroll va al final del contenido de cada tile.
+- **Cerrar:** círculo con fondo de contraste (× o Esc) que vuelve a la grilla.
+
+### Tapas
+- Tipográficas: número, título en Fraunces y nota en Caveat.
+- Escalan con la celda (container queries).
+- En la grilla usan los tonos off (son piezas chicas); al abrirse, el color interpola al fondo del panel (blanco o tinta). Así los tonos off nunca son fondo de una sección.
+- Dentro de un panel, el fondo y el grano son del panel completo, no de la sección (reglas fuera de `@layer` al final de `globals.css`).
+
+### Accesibilidad
+- Los paneles cerrados son `inert`.
+- Con click, el foco pasa al panel; con Tab, el elemento enfocado se trae a la vista.
+- Con **`prefers-reduced-motion`**: misma estructura, pero cada etapa es un estado fijo con fundidos cortos (sin escalar ni morph).
+- **Sin JS** la página se renderiza en flujo normal (hero con el celular quieto + secciones) y las tiles son links a cada sección.
+
 ## Interacciones
-**Historias destacadas** (mockup de Instagram): 4 círculos numerados, uno por escalón de la oferta (auditoría, workbook, sesión, Marketing en orden). Al tocar uno se abre una "historia" a pantalla completa dentro del celular con barra de progreso que se llena, navegación al escalón anterior/siguiente y botón de cerrar. Las vistas quedan con aro gris. El primer círculo late suavemente hasta que se toca alguno.
+**Formularios conversacionales**:
+- Una pregunta por vez, con animación corta entre pasos. Se puede volver al paso anterior.
+- El email se valida con una regex simple.
+- Al terminar, confirmación personalizada con el nombre.
+- Cada instancia usa ids propios (`useId`): el formulario de auditoría está dos veces, en la tile 01 y en "Antes de irte".
 
-**Formularios conversacionales**: una pregunta por vez, con animación corta entre pasos. Se puede volver al paso anterior. El email se valida con una regex simple. Al terminar, confirmación personalizada con el nombre.
-
-**Animaciones**: el trazo a mano del titular se dibuja al cargar; la estampilla gira lento; las cintas "se pegan" al aparecer; algunos elementos suben al entrar en pantalla (`animation-timeline: view()`, sin soporte quedan quietos y visibles). Todo respeta `prefers-reduced-motion`.
+**Animaciones**:
+- El trazo a mano del titular se dibuja al cargar y la estampilla gira lento.
+- Las cintas "se pegan" al aparecer.
+- Todo respeta `prefers-reduced-motion`.
 
 ## Qué cambió respecto del prototipo original
 - Estilos inline → clases Tailwind y tokens; clases `vw-*` → `v-*` (solo las usadas).
@@ -65,7 +136,7 @@ Filtro SVG `feTurbulence` aplicado con `mix-blend-mode: multiply` sobre blanco y
 - El foco visible en bloques tinta es blanco.
 
 ## Pendientes de negocio
-- **Newsletter / mini auditoría:** conectar Substack u otro servicio → `src/lib/submit-form.ts` (`"audit"`). Al suscribirse se entrega el PDF de la mini auditoría.
+- **Newsletter / mini auditoría** (tile 01 y "Antes de irte"): conectar Substack u otro servicio → `src/lib/submit-form.ts` (`"audit"`). Al suscribirse se entrega el PDF de la mini auditoría.
 - **Formulario de presupuesto:** definir destino (email o herramienta) → `submit-form.ts` (`"budget"`).
 - **Comprar y descargar:** link de Mercado Pago con entrega automática del PDF (ej. webhook MP → n8n → email) → `content/workbook.ts`.
 - **Reservar mi sesión:** link de Calendly o similar → `content/marketing-en-orden.ts`.

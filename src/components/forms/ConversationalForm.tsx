@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { CheckIcon } from "@/components/ui/CheckIcon";
 import { formCommon, type FormDef } from "@/content";
 import { fmt } from "@/lib/format";
@@ -11,7 +11,7 @@ type Props = {
   formId: string;
   def: FormDef;
   ariaLabel: string;
-  /** `ink`: sobre fondo tinta (footer). */
+  /** `ink`: sobre fondo tinta (auditoría, "antes de irte"). */
   tone?: "light" | "ink";
 };
 
@@ -32,8 +32,10 @@ export function ConversationalForm({ formId, def, ariaLabel, tone = "light" }: P
   const total = def.steps.length;
   const done = step >= total;
   const st = def.steps[Math.min(step, total - 1)];
-  const inputId = `${formId}-input`;
-  const errorId = `${formId}-error`;
+  // ids únicos por instancia: el mismo formulario puede estar dos veces en la página
+  const uid = useId();
+  const inputId = `${formId}-${uid}-input`;
+  const errorId = `${formId}-${uid}-error`;
 
   function next() {
     const value = current.trim();

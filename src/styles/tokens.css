@@ -34,11 +34,9 @@
   --color-on-ink-muted: rgb(255 255 255 / 0.7);
   --color-on-ink-subtle: rgb(255 255 255 / 0.8);
   --color-on-ink-faint: rgb(255 255 255 / 0.6);
-  --color-on-ink-track: rgb(255 255 255 / 0.3); /* pista de progreso de historias */
   --color-on-ink-outline: rgb(255 255 255 / 0.5);
   --color-terracota-tape: rgb(154 79 55 / 0.24); /* cinta washi */
   --color-terracota-wash: rgb(154 79 55 / 0.08);
-  --color-seen-ring: rgb(41 37 33 / 0.25); /* aro de historia vista */
 
   /* ── Familias tipográficas (las variables --font-* las inyecta next/font en layout.tsx) ── */
   --font-display: var(--font-fraunces), Georgia, serif;
@@ -95,7 +93,15 @@
   --section-pb: 48px;
   --section-pt-desk: 72px;
   --section-pb-desk: 80px;
-  --phone-width: 390px;
+  /* Celular del hero: proporción de un teléfono tipo (pantalla 9:19,5), altura
+     fija que se achica solo si la pantalla no alcanza. */
+  --phone-ratio: calc(9 / 19.5);
+  --phone-h: clamp(460px, 72svh, 640px);
+  --phone-w: min(86vw, calc(var(--phone-h) * var(--phone-ratio)));
+  --phone-h-desk: clamp(520px, calc(100svh - 190px), 720px);
+  --phone-w-desk: calc(var(--phone-h-desk) * var(--phone-ratio));
+  /* Espacio reservado a la derecha del contenido para el riel + su etiqueta (desktop) */
+  --rail-safe: 232px;
 
   /* ── Tipografía fluida de la landing ── */
   --fs-h1: 2.6rem;
@@ -110,11 +116,14 @@
   /* ── Movimiento (duraciones) ── */
   --dur-hover: 0.3s;
   --dur-step: 0.45s;
-  --dur-story: 0.35s;
   --dur-spin: 30s;
-  --dur-pulse: 2.4s;
-  --dur-fill: 1.4s;
   --dur-draw: 0.9s;
+  /* Escenario de tiles (espejo en src/lib/motion.ts) */
+  --dur-tile-lift: 0.15s;
+  --dur-tile-open: 0.5s;
+  --dur-tile-close: 0.42s;
+  --dur-reveal: 0.24s;
+  --dur-fade-reduced: 0.15s;
 
   /* ── Textura de papel ── */
   --grain-opacity: 0.5;

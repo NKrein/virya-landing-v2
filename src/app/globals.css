@@ -133,7 +133,7 @@
     border-radius: 22px;
     padding: 10px;
     box-sizing: border-box;
-    transform: rotate(-4deg);
+    rotate: -4deg; /* propiedad propia: las animaciones de transform no la pisan */
     box-shadow: var(--shadow-tablet);
   }
   .v-tab::before {
@@ -180,16 +180,6 @@
     display: none;
   }
 
-  /* Mockup de teléfono */
-  .v-phone {
-    box-sizing: border-box;
-    width: 100%;
-    background: var(--color-blanco);
-    border: 1px solid var(--color-line-soft);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
   /* Formulario conversacional */
   .v-inrow {
     display: flex;
@@ -219,21 +209,6 @@
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-  }
-
-  /* Historia destacada (círculo del mockup) */
-  .v-hl {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    width: 64px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    font: inherit;
-    cursor: pointer;
-    color: var(--color-tinta);
   }
 
   /* Botón: hover sutil */
@@ -279,6 +254,395 @@
   .v-grain-on-ink {
     mix-blend-mode: screen;
   }
+
+  /* ── Escenario de tiles (src/components/stage) ───────────────── */
+  /* Track alto + panel sticky de 100dvh. overflow: clip (no hidden) para que
+     el escenario no sea contenedor de scroll. */
+  .v-track {
+    position: relative;
+  }
+  .v-stage {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow: clip;
+    background: var(--color-blanco);
+  }
+  /* Hero (menú + texto) dentro del escenario: se va con la intro */
+  .v-stage .v-hero-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .v-stage .v-hero {
+    flex: 1;
+    align-content: start;
+  }
+  /* Lugar del celular en el hero: de altura fija. En el escenario solo se mide. */
+  .v-phone-slot {
+    width: var(--phone-w);
+    height: var(--phone-h);
+    justify-self: center;
+  }
+  .v-stage .v-phone-slot {
+    position: absolute;
+    visibility: hidden;
+  }
+  /* Marco del celular (detrás de la pantalla) */
+  .v-bezel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background: var(--color-tinta);
+    box-shadow: var(--shadow-tablet);
+  }
+  /* Pantalla del celular: perfil + grilla. Crece hasta ocupar el escenario. */
+  .v-screen,
+  .v-phone-static {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--color-blanco);
+  }
+  .v-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+  }
+  /* Sin JS: el celular quieto, en el hero */
+  .v-phone-static {
+    box-sizing: border-box;
+    height: 100%;
+    border: 10px solid var(--color-tinta);
+    border-radius: 46px;
+    box-shadow: var(--shadow-tablet);
+  }
+  /* La cabecera puede ser más alta que su contenido (grilla 3:4): el contenido va centrado */
+  .v-profile {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .v-profile-in {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px 16px 16px;
+  }
+  /* Historias destacadas del perfil: accesos directos a cada tile */
+  .v-hls {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .v-hl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 44px;
+    color: var(--color-tinta);
+    text-decoration: none;
+  }
+  .v-hl:hover {
+    color: var(--color-tinta);
+  }
+  .v-hl-ring {
+    display: flex;
+    padding: 2px;
+    border: 2px solid var(--color-terracota);
+    border-radius: var(--radius-full);
+  }
+  .v-hl-n {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-full);
+    background: var(--color-crema);
+    color: var(--color-terracota);
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .v-hl-label {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  /* Grilla: 2 × 3 en mobile, 3 × 2 en desktop (no se reacomoda al animar) */
+  .v-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+  }
+  /* Cada celda es un contenedor: la tapa escala con su ancho */
+  .v-cell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    container-type: size;
+  }
+  .v-tile {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+  }
+  .v-tile:hover {
+    color: inherit;
+  }
+  .v-tile:focus-visible {
+    outline-offset: -4px;
+  }
+  .v-tone-blanco {
+    background: var(--color-blanco);
+    color: var(--color-tinta);
+  }
+  .v-tone-crema {
+    background: var(--color-crema);
+    color: var(--color-tinta);
+  }
+  .v-tone-terracota-off {
+    background: var(--color-terracota-off);
+    color: var(--color-tinta);
+  }
+  .v-tone-tinta-off {
+    background: var(--color-tinta-off);
+    color: var(--color-tinta);
+  }
+  .v-tone-tinta {
+    background: var(--color-tinta);
+    color: var(--color-blanco);
+  }
+  /* La tile blanca necesita un borde para separarse del fondo */
+  .v-tile.v-tone-blanco {
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+
+  /* Tapa tipográfica */
+  .v-cover {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: clamp(8px, 6.5cqw, 28px);
+  }
+  .v-cover-n {
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    font-weight: 700;
+  }
+  .v-cover-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .v-cover-title {
+    margin: 0;
+    font-size: clamp(12px, 11cqw, 34px);
+    line-height: 1.08;
+    font-weight: 300;
+    max-width: 14ch;
+    transform-origin: left bottom;
+  }
+  .v-cover-note {
+    margin: 0;
+    font-family: var(--font-hand);
+    font-size: clamp(11px, 10cqw, 26px);
+    line-height: 1;
+    color: var(--color-terracota);
+  }
+  .v-cover[data-ink] .v-cover-note {
+    color: var(--color-blanco);
+  }
+  .v-cover--full {
+    padding: 72px var(--gutter) 48px;
+  }
+  .v-cover--full .v-cover-title {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+  }
+  .v-cover--full .v-cover-note {
+    font-size: var(--text-annotation);
+  }
+  .v-cover--full .v-cover-title {
+    max-width: 14ch;
+  }
+  .v-cover--brand {
+    align-items: center;
+    justify-content: center;
+  }
+  .v-cover-stamp {
+    width: min(64%, 160px);
+    height: auto;
+  }
+
+  /* La tile a pantalla completa durante el morph */
+  .v-shell {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  /* Panel con el contenido real; se mide siempre, se ve solo el activo */
+  .v-shell {
+    z-index: 4;
+  }
+  /* Ventana del tamaño del escenario: el recorte de apertura se mide contra ella */
+  .v-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: clip;
+    outline: none;
+  }
+  .v-panel-content {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    padding-top: 104px;
+    will-change: transform;
+  }
+  /* La sección llena el panel: su fondo y su grano llegan hasta abajo */
+  .v-panel-content > section {
+    flex: 1 0 auto;
+  }
+  /* Cerrar (volver a la grilla): círculo con fondo propio, contraste en cualquier panel */
+  .v-close {
+    position: absolute;
+    top: 21px; /* mobile: en la fila de la etiqueta, debajo de los segmentos */
+    right: 8px;
+    z-index: 8; /* por encima de la barra del testigo en mobile */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-tinta);
+    color: var(--color-blanco);
+    cursor: pointer;
+  }
+  .v-close[data-ink] {
+    background: var(--color-blanco);
+    color: var(--color-tinta);
+  }
+
+  /* ── Testigo de posición (SectionRail) ── */
+  /* Riel (desktop): del color opuesto al panel. Por defecto oscuro; claro sobre paneles tinta. */
+  .v-rail {
+    --rail-bg: rgb(41 37 33 / 0.92);
+    --rail-ink: var(--color-blanco);
+    --rail-track: var(--color-on-ink-line);
+    /* Barra (mobile): del mismo tono que el panel, se funde con el encabezado */
+    --bar-bg: var(--color-blanco);
+    --bar-ink: var(--color-tinta);
+    --bar-track: var(--color-line-chip);
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 7;
+    pointer-events: none;
+  }
+  .v-rail[data-ink] {
+    --rail-bg: rgb(255 255 255 / 0.95);
+    --rail-ink: var(--color-tinta);
+    --rail-track: var(--color-line-chip);
+    --bar-bg: var(--color-tinta);
+    --bar-ink: var(--color-blanco);
+    --bar-track: var(--color-on-ink-line);
+  }
+  /* Mobile: barra superior a todo el ancho, con segmentos tipo historias */
+  .v-railbar {
+    padding: 10px 8px 0;
+    color: var(--bar-ink);
+  }
+  /* Con una tile abierta la barra es opaca: el contenido pasa por debajo sin verse */
+  .v-railbar[data-open] {
+    padding-bottom: 28px;
+    background: var(--bar-bg);
+    box-shadow: 0 6px 16px -8px var(--bar-track);
+  }
+  .v-railbar-segs {
+    display: flex;
+    gap: 4px;
+  }
+  .v-railbar-seg {
+    position: relative;
+    flex: 1;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--bar-track);
+  }
+  .v-railbar-seg[data-done] {
+    background: color-mix(in srgb, var(--bar-ink) 45%, transparent);
+  }
+  .v-railbar-fill,
+  .v-rail-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-terracota);
+    transform-origin: left;
+  }
+  .v-railbar-label {
+    margin: 0;
+    padding: 20px 56px 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .v-railbox {
+    display: none;
+  }
+
+  /* Aviso animado de scroll */
+  .v-cue {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 13px;
+  }
+  .v-cue--panel {
+    padding: 8px 0 32px;
+  }
+
+  /* Encabezado de marca de la tile abierta */
+  .v-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .v-panel-iso {
+    width: 28px;
+    height: 28px;
+  }
+  .v-panel-wordmark {
+    width: auto;
+    height: 20px;
+  }
+
+  /* Sin JS / antes de hidratar (mobile): el celular arranca debajo del pliegue */
+  .v-hero-layer--flow .v-hero-text {
+    min-height: calc(100svh - 140px);
+  }
 }
 
 /* ── Animaciones ─────────────────────────────────────────────── */
@@ -292,28 +656,9 @@
     transform: none;
   }
 }
-@keyframes v-story {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 @keyframes v-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-@keyframes v-ring {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.06);
   }
 }
 @keyframes v-draw {
@@ -333,14 +678,6 @@
     opacity: 1;
   }
 }
-@keyframes v-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
 @keyframes v-rise {
   from {
     opacity: 0;
@@ -352,6 +689,15 @@
   }
 }
 
+/* Movimiento reducido: la intro pasa de un estado fijo a otro con un fundido corto */
+@media (prefers-reduced-motion: reduce) {
+  .v-stage .v-hero-layer,
+  .v-bezel,
+  .v-rail {
+    transition: opacity 0.2s linear;
+  }
+}
+
 /* Trazos a mano: pathLength=1 permite dibujarlos con dashoffset */
 .v-draw path,
 .v-draw-v path {
@@ -359,25 +705,30 @@
   stroke-dashoffset: 0;
 }
 
+@keyframes v-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(7px);
+    opacity: 0.2;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .v-cue-wheel {
+    animation: v-cue 1.6s var(--ease-in-out-soft) infinite;
+  }
   .v-step {
     animation: v-step var(--dur-step) var(--ease-out-soft) both;
-  }
-  .v-storyin {
-    animation: v-story var(--dur-story) var(--ease-out-soft) both;
   }
   .v-spin {
     animation: v-spin var(--dur-spin) linear infinite;
   }
-  .v-pulse {
-    animation: v-ring var(--dur-pulse) var(--ease-in-out-soft) infinite;
-  }
   .v-draw path {
     animation: v-draw var(--dur-draw) 0.5s var(--ease-draw) both;
-  }
-  .v-fill {
-    transform-origin: left;
-    animation: v-fill var(--dur-fill) var(--ease-out-soft) both;
   }
   .v-tape {
     animation: v-stick 0.5s 0.3s var(--ease-out-soft) both;
@@ -436,7 +787,7 @@
     display: none !important;
   }
   .v-hero {
-    grid-template-columns: minmax(0, 1fr) var(--phone-width);
+    grid-template-columns: minmax(0, 1fr) var(--phone-w-desk);
     column-gap: 88px;
     align-items: center;
     padding-top: 40px;
@@ -449,9 +800,231 @@
     height: 120px;
     margin-top: 12px;
   }
-  .v-phone {
-    width: var(--phone-width);
-    border: 10px solid var(--color-tinta);
-    border-radius: 46px;
+  .v-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
   }
+  .v-phone-slot {
+    width: var(--phone-w-desk);
+    height: var(--phone-h-desk);
+  }
+  .v-stage .v-phone-slot {
+    position: static;
+  }
+  .v-stage .v-hero {
+    align-content: center;
+  }
+  /* Celular en desktop: la cabecera del perfil tiene más alto (grilla 3:4), más aire y tamaño */
+  .v-profile-in {
+    gap: 20px;
+    padding: 24px 20px;
+  }
+  .v-profile-in .size-14 {
+    width: 68px;
+    height: 68px;
+  }
+  .v-profile-in .text-base {
+    font-size: 18px;
+  }
+  .v-profile-in .text-sm {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+  .v-hl-n {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  .v-hl-label {
+    font-size: 11px;
+  }
+  .v-hero-layer--flow .v-hero-text {
+    min-height: 0;
+  }
+  .v-cover--full {
+    padding: 96px var(--gutter-desk) 72px;
+  }
+  .v-cover--full .v-cover-title {
+    font-size: var(--fs-h1-desk);
+  }
+  .v-close {
+    top: 16px;
+    right: 16px;
+  }
+  /* Espacio seguro a la derecha: el riel y su etiqueta nunca tapan contenido */
+  .v-panel-content {
+    padding-top: 28px;
+    padding-right: var(--rail-safe);
+  }
+  .v-panel-head {
+    margin-top: 0;
+  }
+  .v-cue--panel {
+    display: none;
+  }
+  /* Desktop: riel lateral derecho, del color opuesto al panel */
+  /* Anclado por la lista (6 × 40 + gaps + padding = 266px): el aviso crece hacia abajo sin moverla */
+  .v-rail {
+    --rail-list-h: 266px;
+    inset: calc(50% - var(--rail-list-h) / 2) 20px auto auto;
+    pointer-events: auto;
+  }
+  .v-railbar {
+    display: none;
+  }
+  /* Ancho fijo: ni la etiqueta activa ni el aviso cambian el ancho del riel */
+  .v-railbox {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100px;
+    border-radius: 18px;
+    background: var(--rail-bg);
+    color: var(--rail-ink);
+    backdrop-filter: blur(8px);
+  }
+  .v-cue-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows var(--dur-tile-open) var(--ease-out-soft),
+      opacity var(--dur-tile-open) var(--ease-out-soft);
+  }
+  .v-cue-wrap[data-on] {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .v-cue-wrap-in {
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Isotipo del 06: mismo ancho que las líneas de las demás marcas */
+  .v-rail-iso {
+    width: 20px;
+    height: 20px;
+  }
+  .v-cue--rail {
+    flex-direction: column;
+    gap: 6px;
+    margin: 0 6px;
+    padding: 12px 0 14px;
+    border-top: 1px solid var(--rail-track);
+    font-size: 11px;
+    line-height: 1.25;
+    text-align: center;
+  }
+  .v-railist {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 8px 6px;
+    list-style: none;
+  }
+  .v-rail-hint {
+    position: absolute;
+    right: calc(100% + 12px);
+    top: 8px;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: var(--rail-bg);
+    white-space: nowrap;
+    font-family: var(--font-hand);
+    font-size: 22px;
+    line-height: 1;
+    color: var(--rail-ink);
+  }
+  .v-rail-item {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%; /* botones y enlace iguales: números en una misma columna */
+    min-height: 40px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .v-rail-item:hover {
+    color: inherit;
+  }
+  .v-rail-n {
+    min-width: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .v-rail-line {
+    position: relative;
+    width: 20px;
+    height: 2px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--rail-track);
+    transition: width var(--dur-hover) var(--ease-out-soft);
+  }
+  .v-rail-item[data-done] .v-rail-line {
+    background: color-mix(in srgb, var(--rail-ink) 55%, transparent);
+  }
+  .v-rail-item[aria-current] .v-rail-line {
+    width: 44px;
+    background: var(--rail-track);
+  }
+  /* El nombre aparece a la izquierda: siempre en la activa, en hover/foco en las demás */
+  .v-rail-label {
+    position: absolute;
+    right: calc(100% + 10px);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: var(--rail-bg);
+    color: var(--rail-ink);
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-hover) var(--ease-out-soft);
+  }
+  .v-rail-item[aria-current] .v-rail-label,
+  .v-rail-item:hover .v-rail-label,
+  .v-rail-item:focus-visible .v-rail-label {
+    opacity: 1;
+  }
+  .v-rail-item[aria-current] .v-rail-label {
+    font-weight: 700;
+  }
+  .v-rail-brand .v-rail-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+}
+
+/*
+ * Secciones dentro de un panel de tile. Va fuera de @layer a propósito: tiene
+ * que ganarle a las utilidades de Tailwind de cada sección (bg-tinta, border-t).
+ * El fondo y el grano son del panel completo, así no hay cortes de textura
+ * entre la sección, el encabezado y el margen del riel.
+ */
+.v-panel-content > section {
+  padding-top: 20px;
+  border-top-width: 0;
+  background-color: transparent;
+}
+.v-panel-content > section > .v-grain {
+  display: none;
+}
+
+/* Adentro de un panel la entrada la maneja el panel, no view() (fuera de @layer:
+   tiene que ganarle a las animaciones de revelado, que también están fuera). */
+.v-panel .v-rv,
+.v-panel .v-draw-v path {
+  animation: none;
 }
