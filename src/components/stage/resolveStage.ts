@@ -133,20 +133,22 @@ export const gridRest = (seg: StageSegments) => seg.introLen + (seg.restEnd - se
 /**
  * Paradas del recorrido (px en el track) para el scroll "un gesto, una
  * parada" (useStepScroll): las paradas de la intro (fracciones de su largo),
- * la grilla en reposo y, por tile, el inicio de su
- * lectura, el final de su contenido y la grilla después de cerrarla. Entre el
- * inicio y el final de una lectura larga el scroll es libre (`ranges`).
+ * la grilla en reposo (solo al principio) y, por tile, el inicio de su
+ * lectura y el final de su contenido. Entre el inicio y el final de una
+ * lectura larga el scroll es libre (`ranges`).
+ *
+ * Entre tile y tile NO hay parada en la grilla: un gesto pasa de una sección
+ * a la siguiente, mostrando el cierre de una y la apertura de la otra.
  */
 export function stepStops(seg: StageSegments, introStops: readonly number[] = []) {
   const stops = [...introStops.map((p) => p * seg.introLen), gridRest(seg)];
   const ranges: [number, number][] = [];
-  seg.tiles.forEach((t, i) => {
+  seg.tiles.forEach((t) => {
     stops.push(t.readStart);
     if (t.readEnd > t.readStart) {
       stops.push(t.readEnd);
       ranges.push([t.readStart, t.readEnd]);
     }
-    stops.push(gridAfter(seg, i));
   });
   return { stops, ranges };
 }

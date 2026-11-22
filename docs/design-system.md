@@ -75,12 +75,13 @@ Código en [`src/components/stage/`](../src/components/stage) ([`DesktopStage.ts
 ### Recorrido
 Un track alto con un escenario `sticky` de 100lvh. Las paradas, en orden, son:
 1. **Hero.**
-2. **Grilla a pantalla completa.**
+2. **Grilla a pantalla completa** (solo al principio).
 3. Por cada tile:
    - **inicio de lectura**;
-   - **final del contenido** (si es más largo que la pantalla);
-   - **grilla otra vez**.
+   - **final del contenido** (si es más largo que la pantalla).
 4. **Final de la página** ("Antes de irte" + footer).
+
+Entre tile y tile **no hay parada en la grilla**: un gesto pasa directo de una sección a la siguiente, mostrando el cierre de una (la grilla se ve un instante) y la apertura de la otra. La × y Esc llevan a la grilla entre esa tile y la siguiente; desde ahí, el próximo gesto va a la tile de arriba o de abajo.
 
 La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolveStage.ts) (qué tile está abierta según el scroll, con histéresis) y en [`introGeometry.ts`](../src/components/stage/introGeometry.ts) (dónde está el celular en cada momento de la intro).
 
