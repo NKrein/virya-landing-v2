@@ -4,7 +4,7 @@ import { Folio } from "@/components/ui/Folio";
 import { GrainOverlay } from "@/components/ui/GrainOverlay";
 import { anchors, marketingEnOrden as c } from "@/content";
 
-/** N.º 02 — Marketing en orden: bloque tinta con servicio mensual y sesión estratégica. */
+/** N.º 03 — Marketing en orden: bloque tinta con servicio mensual y sesión estratégica. */
 export function MarketingEnOrden() {
   return (
     <section

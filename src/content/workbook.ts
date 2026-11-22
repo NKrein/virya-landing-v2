@@ -1,8 +1,8 @@
 import { href } from "./anchors";
 
-/** N.º 01 — Workbook (producto digital). */
+/** N.º 02 — Workbook (producto digital). */
 export const workbook = {
-  folio: { number: "N.º 01", label: "Producto digital", note: "descarga inmediata" },
+  folio: { number: "N.º 02", label: "Producto digital", note: "descarga inmediata" },
 
   cover: {
     ariaLabel: "Tapa del workbook Engagement en Instagram que vende, en una tablet",

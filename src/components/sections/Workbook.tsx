@@ -7,7 +7,7 @@ import { HandUnderline } from "@/components/ui/HandUnderline";
 import { Stamp } from "@/components/ui/Stamp";
 import { anchors, workbook as c } from "@/content";
 
-/** N.º 01 — Workbook: tablet con la tapa, textos, módulos y precio de lanzamiento. */
+/** N.º 02 — Workbook: tablet con la tapa, textos, módulos y precio de lanzamiento. */
 export function Workbook() {
   return (
     <section

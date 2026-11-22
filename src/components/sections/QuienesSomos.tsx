@@ -1,10 +1,10 @@
 import { Folio } from "@/components/ui/Folio";
 import { anchors, quienesSomos as c } from "@/content";
 
-/** N.º 04 — Quiénes somos: tres especialidades numeradas. */
+/** N.º 05 — Quiénes somos: tres especialidades numeradas. */
 export function QuienesSomos() {
   return (
-    <section id={anchors.about} aria-labelledby="quienes-title" className="v-sec pt-0">
+    <section id={anchors.about} aria-labelledby="quienes-title" className="v-sec">
       <div className="v-wrap">
         <Folio {...c.folio} />
         <div className="flex max-w-[640px] flex-col gap-[18px]">

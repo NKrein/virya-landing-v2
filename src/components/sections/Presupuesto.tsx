@@ -4,14 +4,15 @@ import { Folio } from "@/components/ui/Folio";
 import { GrainOverlay } from "@/components/ui/GrainOverlay";
 import { anchors, budgetForm, presupuesto as c } from "@/content";
 
-/** N.º 03 — Proyectos a medida: chips de servicios + formulario en "hoja de papel" con cinta. */
+/** N.º 04 — Proyectos a medida: chips de servicios + formulario en "hoja de papel" con cinta. */
 export function Presupuesto() {
   return (
     <section id={anchors.budget} aria-labelledby="presupuesto-title" className="v-sec">
       <div className="v-wrap">
         <Folio {...c.folio} />
-        <div className="v-two">
-          <div className="flex flex-col gap-3.5">
+        {/* Texto arriba, formulario debajo (también en desktop) */}
+        <div className="flex flex-col gap-8">
+          <div className="flex max-w-[640px] flex-col gap-3.5">
             <h2 id="presupuesto-title" className="v-disp v-h2 m-0">{c.title}</h2>
             <div className="v-chips">
               {c.chips.map((chip) => (
@@ -21,7 +22,7 @@ export function Presupuesto() {
             <p className="m-0 text-[15px] leading-normal">{c.text}</p>
           </div>
 
-          <div className="v-paper v-rv box-border flex flex-col gap-3 rounded-sm px-[18px] pt-7 pb-[22px]">
+          <div className="v-paper v-rv box-border flex w-full max-w-[560px] flex-col gap-3 rounded-sm px-[18px] pt-7 pb-[22px]">
             <GrainOverlay />
             <span
               aria-hidden="true"

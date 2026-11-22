@@ -22,7 +22,7 @@ export const formCommon = {
   back: "Volver al paso anterior",
 } as const;
 
-/** Newsletter + mini auditoría (footer). PENDIENTE: conectar Substack / servicio de email. */
+/** Newsletter + mini auditoría (sección N.º 01). PENDIENTE: conectar Substack / servicio de email. */
 export const auditForm: FormDef = {
   steps: [
     {
@@ -45,7 +45,7 @@ export const auditForm: FormDef = {
   done: "Listo, {name}. Revisá tu email: la auditoría ya va en camino, y el newsletter te llega una vez por mes.",
 };
 
-/** Pedido de presupuesto (sección N.º 03). PENDIENTE: definir destino (email o herramienta). */
+/** Pedido de presupuesto (sección N.º 04). PENDIENTE: definir destino (email o herramienta). */
 export const budgetForm: FormDef = {
   steps: [
     {

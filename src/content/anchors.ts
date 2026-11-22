@@ -8,6 +8,8 @@ export const anchors = {
   budget: "presupuesto",
   about: "quienes-somos",
   audit: "auditoria",
+  contact: "contacto",
+  farewell: "antes-de-irte",
 } as const;
 
 export const href = (id: keyof typeof anchors) => `#${anchors[id]}`;

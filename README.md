@@ -1,7 +1,7 @@
 # Virya — Landing v2
 
 Landing de **Virya Marketing Studio**. Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
-La v1 reproduce fielmente el diseño original (ver [docs/design-system.md](docs/design-system.md)); las siguientes versiones mejoran diseño, interacciones y transiciones sobre esta base.
+Sobre la base visual del diseño original, la página es un **escenario de tiles**: un celular con el perfil de Instagram cuya grilla crece con el scroll, y cada tile se abre como una sección (ver [docs/design-system.md](docs/design-system.md)). Las transiciones usan [Motion](https://motion.dev).
 
 ## Comandos
 
@@ -23,6 +23,7 @@ src/
   components/
     ui/                piezas reutilizables (Button, Chip, Folio, GrainOverlay, Stamp…)
     sections/          una carpeta/archivo por sección de la página
+    stage/             escenario de tiles: celular, grilla, apertura/cierre, scroll, riel
     forms/             ConversationalForm (formulario de una pregunta por vez)
   lib/                 sections.ts (registro/orden), mailto, format, submit-form
 docs/                  guías: tokens, content, sections, design-system
@@ -34,5 +35,6 @@ docs/                  guías: tokens, content, sections, design-system
 |---|---|
 | Cambiar un color, tipografía, radio, duración | `src/styles/tokens.css` → [docs/tokens.md](docs/tokens.md) |
 | Cambiar copy de una sección | `src/content/<seccion>.ts` → [docs/content.md](docs/content.md) |
-| Agregar, quitar o reordenar una sección | `src/lib/sections.ts` → [docs/sections.md](docs/sections.md) |
+| Agregar, quitar o reordenar una tile / sección | `src/content/tiles.ts` y `src/lib/sections.ts` → [docs/sections.md](docs/sections.md) |
+| Ajustar transiciones o el recorrido con scroll | `src/components/stage/` → [docs/design-system.md](docs/design-system.md#escenario-de-tiles-v3) |
 | Conectar formularios / pagos / reservas | [docs/design-system.md](docs/design-system.md#pendientes-de-negocio) |
