@@ -33,6 +33,7 @@ import {
   headerOpen,
   heroOut,
   introStops,
+  phoneCueOpacity,
   railIn,
   screenRadius,
   screenRect,
@@ -186,6 +187,11 @@ export function TileStage({ nav, hero, panels }: Props) {
   const heroY = useGeo((p, g) => (g.mobile ? -0.3 * g.stageH * heroOut(p, g) : 0));
   const heroV = useGeo((p, g) => (heroOut(p, g) >= 0.999 ? "hidden" : "visible"));
   const railO = useGeo((p, g) => railIn(p, g));
+  const cueX = useGeo((p, g) => screenRect(p, g).x);
+  const cueY = useGeo((p, g) => { const r = screenRect(p, g); return r.y + r.h + FRAME + 14; });
+  const cueW = useGeo((p, g) => screenRect(p, g).w);
+  const cueO = useGeo((p, g) => phoneCueOpacity(p, g));
+  const cueV = useGeo((p, g) => (phoneCueOpacity(p, g) <= 0.01 ? "hidden" : "visible"));
 
   /* ── Scroll → estado ─────────────────────────────────────────── */
   const apply = useCallback(
@@ -473,28 +479,31 @@ export function TileStage({ nav, hero, panels }: Props) {
   const profile = (
     <div ref={profileRef} className="v-profile-in">
       <div className="flex items-center gap-3.5">
-        <Stamp className="size-14 flex-none rounded-full" />
+        <Stamp className="v-profile-avatar flex-none rounded-full" />
         <div className="flex min-w-0 flex-col">
-          <p className="m-0 text-base font-bold">{heroCopy.phone.profileName}</p>
-          <p className="m-0 text-[13px]">{heroCopy.phone.profileRole}</p>
+          <p className="v-profile-name">{heroCopy.phone.profileName}</p>
+          <p className="v-profile-role">{heroCopy.phone.profileRole}</p>
         </div>
       </div>
-      <p className="m-0 text-sm leading-[1.4]">{heroCopy.phone.bio}</p>
-      {/* Historias destacadas: un acceso directo por sección (abren su tile). */}
-      <div role="group" aria-label={copy.highlightsAria} className="v-hls">
-        {openable.map((t) => (
-          <a
-            key={t.id}
-            href={`#${anchors[t.anchor]}`}
-            aria-label={fmt(copy.tileAria, { n: t.n, label: t.label })}
-            className="v-hl"
-          >
-            <span className="v-hl-ring">
-              <span className="v-disp v-hl-n">{Number(t.n)}</span>
-            </span>
-            <span className="v-hl-label">{t.short}</span>
-          </a>
-        ))}
+      <p className="v-profile-bio">{heroCopy.phone.bio}</p>
+      {/* Historias destacadas (diseño original): cada una abre su tile. */}
+      <div role="group" aria-label={heroCopy.phone.highlightsAria} className="v-hls">
+        {heroCopy.phone.highlights.map((h, i) => {
+          const tile = tiles.find((t) => t.id === h.tile)!;
+          return (
+            <a
+              key={h.tile}
+              href={`#${anchors[tile.anchor]}`}
+              aria-label={fmt(heroCopy.phone.highlightAria, { n: i + 1, label: h.label })}
+              className="v-hl"
+            >
+              <span className="v-hl-ring">
+                <span className="v-disp v-hl-n">{i + 1}</span>
+              </span>
+              <span className="v-hl-label">{h.label}</span>
+            </a>
+          );
+        })}
       </div>
     </div>
   );
@@ -551,6 +560,15 @@ export function TileStage({ nav, hero, panels }: Props) {
               className="v-bezel"
               style={{ x: bezX, y: bezY, width: bezW, height: bezH, borderRadius: bezR, opacity: bezO }}
             />
+
+            {/* Aviso debajo del celular: se va cuando el celular empieza a crecer. */}
+            <m.div
+              aria-hidden="true"
+              className="v-phone-cue"
+              style={{ x: cueX, y: cueY, width: cueW, opacity: cueO, visibility: cueV }}
+            >
+              <ScrollCue label={heroCopy.phone.cue} />
+            </m.div>
 
             {/* Pantalla del celular = la grilla de tiles. */}
             <m.div

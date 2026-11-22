@@ -104,5 +104,13 @@ export const headerOpen = (p: number, g: IntroGeometry) =>
 export const heroOut = (p: number, g: IntroGeometry) =>
   ease(seg(q(p, g), g.mobile ? T.mobile.hero : T.desk.hero));
 
+/**
+ * Aviso "Deslizá para ver más" debajo del celular. Desktop: visible en el hero.
+ * Mobile: visible con el celular completo (parada intermedia). Se va cuando el
+ * celular empieza a crecer.
+ */
+export const phoneCueOpacity = (p: number, g: IntroGeometry) =>
+  1 - seg(q(p, g), g.mobile ? [T.mobile.grow[0], T.mobile.grow[0] + 0.08] : [0, 0.12]);
+
 /** Testigo (riel / barra): aparece cuando la grilla ya ocupa la pantalla. */
 export const railIn = (p: number, g: IntroGeometry) => seg(q(p, g), [0.86, 0.98]);

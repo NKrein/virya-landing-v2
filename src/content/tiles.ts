@@ -95,7 +95,6 @@ export const tiles: readonly Tile[] = [
 export const stage = {
   railAriaLabel: "Secciones",
   tileAria: "Abrir N.º {n}: {label}",
-  highlightsAria: "Historias destacadas: una por sección",
   brandAria: "Ir al final: newsletter y contacto",
   close: "Volver a la grilla",
   scrollCue: "Deslizá para seguir",

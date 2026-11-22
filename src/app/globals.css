@@ -290,6 +290,15 @@
     position: absolute;
     visibility: hidden;
   }
+  /* Aviso "Deslizá para ver más" debajo del celular (posición por JS, sigue al celular) */
+  .v-phone-cue {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   /* Marco del celular (detrás de la pantalla) */
   .v-bezel {
     position: absolute;
@@ -335,11 +344,33 @@
     gap: 14px;
     padding: 20px 16px 16px;
   }
+  /* Textos del perfil dentro del celular (escala de pantalla de teléfono) */
+  .v-profile-avatar {
+    width: 48px;
+    height: 48px;
+  }
+  .v-profile-name {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .v-profile-role {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .v-profile-bio {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
   /* Historias destacadas del perfil: accesos directos a cada tile */
   .v-hls {
     display: flex;
-    justify-content: space-between;
-    gap: 6px;
+    justify-content: space-around;
+    gap: 8px;
     margin-top: 4px;
   }
   .v-hl {
@@ -357,23 +388,23 @@
   .v-hl-ring {
     display: flex;
     padding: 2px;
-    border: 2px solid var(--color-terracota);
+    border: 1.5px solid var(--color-terracota);
     border-radius: var(--radius-full);
   }
   .v-hl-n {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
     border-radius: var(--radius-full);
     background: var(--color-crema);
     color: var(--color-terracota);
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 400;
   }
   .v-hl-label {
-    font-size: 10px;
+    font-size: 9.5px;
     line-height: 1.2;
   }
 
@@ -441,9 +472,10 @@
     height: 100%;
     padding: clamp(8px, 6.5cqw, 28px);
   }
+  /* Escala con la celda: chico dentro del celular, 12px a pantalla completa */
   .v-cover-n {
-    font-size: var(--text-label);
-    line-height: var(--text-label--line-height);
+    font-size: clamp(8px, 7.5cqw, var(--text-label));
+    line-height: 1.3;
     font-weight: 700;
   }
   .v-cover-foot {
@@ -453,7 +485,7 @@
   }
   .v-cover-title {
     margin: 0;
-    font-size: clamp(12px, 11cqw, 34px);
+    font-size: clamp(10px, 11cqw, 34px);
     line-height: 1.08;
     font-weight: 300;
     max-width: 14ch;
@@ -819,24 +851,26 @@
     gap: 20px;
     padding: 24px 20px;
   }
-  .v-profile-in .size-14 {
-    width: 68px;
-    height: 68px;
+  .v-profile-avatar {
+    width: 56px;
+    height: 56px;
   }
-  .v-profile-in .text-base {
-    font-size: 18px;
-  }
-  .v-profile-in .text-sm {
+  .v-profile-name {
     font-size: 15px;
-    line-height: 1.45;
+  }
+  .v-profile-role {
+    font-size: 12.5px;
+  }
+  .v-profile-bio {
+    font-size: 13px;
   }
   .v-hl-n {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
   }
   .v-hl-label {
-    font-size: 11px;
+    font-size: 10px;
   }
   .v-hero-layer--flow .v-hero-text {
     min-height: 0;

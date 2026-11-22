@@ -98,7 +98,7 @@
   --phone-ratio: calc(9 / 19.5);
   --phone-h: clamp(460px, 72svh, 640px);
   --phone-w: min(86vw, calc(var(--phone-h) * var(--phone-ratio)));
-  --phone-h-desk: clamp(520px, calc(100svh - 190px), 720px);
+  --phone-h-desk: clamp(520px, calc(100svh - 240px), 700px); /* deja lugar al aviso de abajo */
   --phone-w-desk: calc(var(--phone-h-desk) * var(--phone-ratio));
   /* Espacio reservado a la derecha del contenido para el riel + su etiqueta (desktop) */
   --rail-safe: 232px;

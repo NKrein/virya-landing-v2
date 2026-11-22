@@ -1,4 +1,5 @@
 import { site } from "./site";
+import type { TileId } from "./tiles";
 
 /** Hero: titular + celular con el perfil y la grilla de tiles (ver tiles.ts). */
 export const hero = {
@@ -17,5 +18,16 @@ export const hero = {
     profileRole: site.tagline,
     bio: "Cada post es una parte de lo que hacemos. Deslizá o tocá uno.",
     ariaLabel: "Perfil de Virya: grilla de secciones",
+    /** Historias destacadas (como en el diseño original): cada una abre su tile. */
+    highlights: [
+      { label: "Empezar", tile: "audit" },
+      { label: "Ritmo", tile: "workbook" },
+      { label: "Problema", tile: "projects" },
+      { label: "Tiempo", tile: "marketing" },
+    ] satisfies readonly { label: string; tile: TileId }[],
+    highlightsAria: "Historias destacadas: elegí tu situación",
+    highlightAria: "Historia {n}: {label}",
+    /** Aviso debajo del celular */
+    cue: "Deslizá para ver más",
   },
 } as const;
