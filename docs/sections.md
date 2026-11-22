@@ -32,6 +32,8 @@ Si cambia el número de una tile, actualizar también el folio de su sección (`
 
 Los links a la sección (`href("miSeccion")`) abren la tile automáticamente: el escenario intercepta los clicks en `#ancla`, los cambios de hash y el hash al cargar.
 
+En mobile no hay que hacer nada extra: el flujo nativo (`MobileFlow.tsx`) usa las mismas tiles y secciones, con la tile como tapa al principio de cada sección.
+
 ## Secciones fuera del escenario
 Para algo que no sea una tile (como "Antes de irte"), crear el componente y registrarlo en `sections.ts` con su `slot`. Después del escenario el scroll es libre, sin paradas.
 

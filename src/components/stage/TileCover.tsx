@@ -14,6 +14,8 @@ type Props = {
   size: "tile" | "full";
   /** Solo re-medir el título en aperturas/cierres (no durante la intro). */
   layoutDependency?: unknown;
+  /** Sin morph (mobile, flujo nativo): título estático, Motion no mide nada. */
+  still?: boolean;
 };
 
 /**
@@ -22,7 +24,7 @@ type Props = {
  * En la grilla, los tamaños salen del ancho de la celda (container queries),
  * así crecen de forma continua con el celular.
  */
-export function TileCover({ tile, size, layoutDependency }: Props) {
+export function TileCover({ tile, size, layoutDependency, still }: Props) {
   if (!tile.cover) {
     return (
       <div className="v-cover v-cover--brand">
@@ -34,13 +36,17 @@ export function TileCover({ tile, size, layoutDependency }: Props) {
     <div className={`v-cover v-cover--${size}`} data-ink={tile.tone === "tinta" || undefined}>
       <span className="v-cover-n">N.º {tile.n}</span>
       <div className="v-cover-foot">
-        <m.p
-          layoutId={`tile-title-${tile.id}`}
-          layoutDependency={layoutDependency}
-          className="v-disp v-cover-title"
-        >
-          {tile.cover.title}
-        </m.p>
+        {still ? (
+          <p className="v-disp v-cover-title">{tile.cover.title}</p>
+        ) : (
+          <m.p
+            layoutId={`tile-title-${tile.id}`}
+            layoutDependency={layoutDependency}
+            className="v-disp v-cover-title"
+          >
+            {tile.cover.title}
+          </m.p>
+        )}
         <p className="v-cover-note">{tile.cover.note}</p>
       </div>
     </div>

@@ -50,38 +50,42 @@ Escala del design system (`--text-*` en tokens): display-xl 72/76, display-l 48/
 - El wordmark **nunca** va junto a la estampilla.
 
 ## Textura de papel
-Filtro SVG `feTurbulence` aplicado con `mix-blend-mode: multiply` sobre blanco y `screen` sobre tinta (`GrainFilters` / `GrainOverlay`). Es muy sutil; si afecta el rendimiento, reemplazar por un PNG de ruido.
+`GrainOverlay`: un SVG con `feTurbulence` usado como **imagen de fondo en mosaico** (data URI en `.v-grain`, `globals.css`), con puntos oscuros sobre claro y claros sobre tinta.
+- Se rasteriza una vez: no es un filtro en vivo ni usa `mix-blend-mode`, así que es barato de componer y de scrollear, también en mobile.
+- Reemplazó al filtro en vivo con el mismo aspecto (brillo y variación iguales en la comparación).
+- Va en el contenedor completo (escenario, panel, sección mobile), no solo en una parte, para que no haya cortes de tono.
 
 ## Responsive
 - Mobile first a **390px**, gutter lateral de 20px.
-- Breakpoint único en **900px** (`desk:`). Desde ahí:
+- Breakpoint único en **900px** (`desk:`). Cambia también **la experiencia**: desde 900px es el escenario de tiles (abajo); debajo, el **flujo nativo mobile** (ver "Mobile"). Desde 900px:
   - el hero pasa a dos columnas;
   - la grilla de tiles pasa de 2 × 3 a 3 × 2;
   - el testigo pasa de barra superior a riel lateral;
   - el gutter sube a 56px.
+- **Alturas estables:** nunca `dvh` para layout, porque cambia con la barra del navegador y hace saltar el scroll. Se usa:
+  - `100lvh` para contenedores fijos (escenario, pantalla del celular);
+  - `svh` para lo que tiene que verse sí o sí;
+  - en JS, `lvh`/`svh` medidos una vez con elementos sonda (`useStableViewport.ts`), que se vuelven a medir solo si cambia el ancho.
 - El celular tiene proporción de teléfono (pantalla 9:19,5) y altura fija; se achica solo si la pantalla no alcanza. Dentro, la grilla usa celdas 3:4 como el perfil de Instagram.
 - Todos los objetivos táctiles miden **44px o más**.
 
-## Escenario de tiles (v3)
-Código en [`src/components/stage/`](../src/components/stage). Todo se maneja con el scroll; un click en una tile, una historia, el riel o un link con ancla abre directo esa tile.
+## Escenario de tiles (v3, desktop ≥ 900px)
+Código en [`src/components/stage/`](../src/components/stage) ([`DesktopStage.tsx`](../src/components/stage/DesktopStage.tsx); [`TileStage.tsx`](../src/components/stage/TileStage.tsx) elige entre desktop y mobile). Todo se maneja con el scroll; un click en una tile, una historia, el riel o un link con ancla abre directo esa tile.
 
 ### Recorrido
-Un track alto con un escenario `sticky` de 100dvh. Las paradas, en orden, son:
+Un track alto con un escenario `sticky` de 100lvh. Las paradas, en orden, son:
 1. **Hero.**
-2. **Celular completo** (solo mobile): una parada intermedia.
-3. **Grilla a pantalla completa.**
-4. Por cada tile:
+2. **Grilla a pantalla completa.**
+3. Por cada tile:
    - **inicio de lectura**;
    - **final del contenido** (si es más largo que la pantalla);
    - **grilla otra vez**.
-5. **Final de la página** ("Antes de irte" + footer).
+4. **Final de la página** ("Antes de irte" + footer).
 
 La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolveStage.ts) (qué tile está abierta según el scroll, con histéresis) y en [`introGeometry.ts`](../src/components/stage/introGeometry.ts) (dónde está el celular en cada momento de la intro).
 
 ### Movimiento
-- **Intro (sigue al scroll):**
-  - Desktop: el celular crece desde la columna derecha hasta que su pantalla, que **es** la grilla, ocupa todo. El texto del hero se va, el perfil se pliega y el marco se desvanece.
-  - Mobile: del celular asoma el perfil, las historias y un tercio de la primera fila. Sube, se detiene completo y después pasa a pantalla completa.
+- **Intro (sigue al scroll):** el celular crece desde la columna derecha hasta que su pantalla, que **es** la grilla, ocupa todo. El texto del hero se va, el perfil se pliega y el marco se desvanece.
 - **Apertura (duración fija, ~0,5 s):** la tile crece desde su celda hasta la pantalla (layout compartido de Motion). El color va del tono de la tapa al fondo del panel y el título viaja. El contenido real entra al mismo ritmo, revelado por un recorte que crece con la tile.
 - **Cierre (~0,42 s, más corto que la apertura):** el contenido se va y la tile vuelve a su celda, sin pasarse. Si se saltean varias tiles, el cierre es corto (0,25 s) y no se reproducen las intermedias.
 - **Lectura:** el contenido de la tile abierta se desplaza 1:1 con el scroll nativo; no hay scroll interno.
@@ -94,6 +98,7 @@ La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolv
 - Varios gestos seguidos avanzan una parada cada uno.
 - Dentro de una lectura larga y después del escenario, el scroll es libre.
 - Reemplaza a `scroll-snap` (`mandatory` + `snap-stop`), que en la práctica no garantiza detenerse en cada parada.
+- **Solo con mouse o trackpad (`pointer: fine`).** En táctil (por ejemplo, un iPad horizontal, que ve el escenario de desktop) queda apagado y el scroll es nativo, porque llamar a `scrollTo` durante la inercia del dedo pelea con iOS. Limitación conocida: ahí un gesto largo puede pasar más de una tile.
 
 ### Testigo de posición
 - **Desktop: riel lateral derecho.**
@@ -102,7 +107,6 @@ La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolv
   - Es del **color opuesto** al panel abierto: oscuro sobre blanco, claro sobre tinta.
   - Debajo de la lista, en el mismo contenedor, va el aviso "Deslizá para seguir".
   - El contenido deja libre a la derecha `--rail-safe` (232px) para que el riel y su etiqueta nunca lo tapen.
-- **Mobile: barra superior a todo el ancho.** Segmentos tipo historias y "N.º 02 · Workbook". Con una tile abierta es opaca, del tono del panel. El aviso de scroll va al final del contenido de cada tile.
 - **Cerrar:** círculo con fondo de contraste (× o Esc) que vuelve a la grilla.
 
 ### Tapas
@@ -116,6 +120,39 @@ La lógica es pura y está en [`resolveStage.ts`](../src/components/stage/resolv
 - Con click, el foco pasa al panel; con Tab, el elemento enfocado se trae a la vista.
 - Con **`prefers-reduced-motion`**: misma estructura, pero cada etapa es un estado fijo con fundidos cortos (sin escalar ni morph).
 - **Sin JS** la página se renderiza en flujo normal (hero con el celular quieto + secciones) y las tiles son links a cada sección.
+
+## Mobile (< 900px): flujo nativo
+Código en [`MobileFlow.tsx`](../src/components/stage/MobileFlow.tsx). En táctil, un escenario fijo que abre y cierra tiles con el scroll choca con la inercia nativa y con la barra del navegador. Por eso en mobile solo la intro tiene paradas obligatorias (ver abajo); desde la N.º 01 el **scroll es 100% nativo**.
+
+### Recorrido
+1. **Intro de un movimiento** ([`useIntroPager.ts`](../src/components/stage/useIntroPager.ts)). Tres paradas obligatorias: **hero → grilla expandida → inicio de la N.º 01**.
+   - Cualquier gesto en esa zona (dedo, rueda, trackpad, teclado) lleva a la parada siguiente en su dirección con una transición animada de ~1s, sin importar el largo del gesto; la inercia sobrante se absorbe.
+   - Hacia arriba es igual: de la 01 a la grilla, de la grilla al hero. En el hero, hacia arriba no hay parada: el gesto se deja pasar ("tirar para recargar").
+   - Si el scroll nativo deja la página a medio camino de la intro (por ejemplo, volviendo desde la 01), se completa hasta la parada más cercana en su dirección.
+   - Durante la transición, el celular asoma **siempre debajo del texto del hero** (se mide; nunca se superpone), sube sin detenerse y crece hasta que la grilla llena la pantalla.
+2. **Grilla** a pantalla completa: es una parada; el gesto siguiente la lleva hacia arriba y abre la 01.
+3. **Secciones una debajo de la otra**, en el orden de las tiles, con scroll nativo. Cada una abre con su **tapa** (una tarjeta igual a la tile) que "se abre" al entrar en pantalla: escala y opacidad con `animation-timeline: view()`, en la GPU y sin JS.
+4. **"Antes de irte" + footer.**
+
+### Intro sin layout por cuadro
+La geometría pura está en [`mobileIntro.ts`](../src/components/stage/mobileIntro.ts):
+- La pantalla del celular se renderiza **siempre** a tamaño de pantalla completa (ancho × 100lvh) y se **escala** para el estado "celular": solo `transform`/`opacity`, sin cambios de tamaño ni recálculo de container queries.
+- El celular es lo más grande que entra (ancho − 32px, sin pasarse del alto visible).
+- El perfil no se pliega: el contenido de la pantalla es [perfil][grilla], y al crecer se traslada hacia arriba, como scrollear un perfil de Instagram.
+- La última fila de la grilla reserva abajo la diferencia `100lvh − 100svh`, así su texto nunca queda debajo de la barra del navegador.
+
+### Navegación y testigo
+- Tocar una tile, una historia o un link con ancla hace scroll suave a esa sección (con `scroll-padding-top` igual a la barra).
+- **Barra superior fija** (aparece al pasar la grilla):
+  - segmentos tipo historias que se llenan con la lectura;
+  - "N.º 02 · Workbook";
+  - botón **"Ver todas"** (ícono de grilla), que vuelve a la grilla.
+- La sección activa es la que cruza el 45% de la pantalla.
+
+### Rendimiento
+- Medido con la CPU 4× y 6× más lenta: 60fps estables en la intro, las tapas y la lectura.
+- Con la página quieta: cero layouts por cuadro.
+- Las animaciones infinitas tienen que ser de elementos HTML con `transform`/`opacity`. Por ejemplo, la ruedita del aviso de scroll es un `<span>`: animar un `<rect>` SVG provocaba un layout por cuadro todo el tiempo.
 
 ## Interacciones
 **Formularios conversacionales**:

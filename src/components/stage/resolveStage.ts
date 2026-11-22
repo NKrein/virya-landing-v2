@@ -1,7 +1,7 @@
 /**
  * Máquina de estados del escenario de tiles (función pura, sin DOM).
  *
- * El escenario es un "track" alto con un panel sticky de 100dvh. La posición
+ * El escenario es un "track" alto con un panel sticky de 100lvh. La posición
  * de scroll dentro del track (y, en px) decide QUÉ se muestra; las animaciones
  * de apertura/cierre (con duración fija) deciden CÓMO. Ver docs/design-system.md.
  *

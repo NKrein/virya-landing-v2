@@ -231,40 +231,43 @@
     position: relative;
   }
 
-  /* Textura de papel: filtros SVG definidos en layout (GrainFilters) */
+  /*
+   * Textura de papel: SVG con feTurbulence como imagen de fondo en mosaico.
+   * Se rasteriza una vez (no es un filtro en vivo ni usa mix-blend-mode):
+   * barata de componer y de scrollear, también en mobile.
+   */
   .v-grain {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
     pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .14 0 0 0 0 .13 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
     opacity: var(--grain-opacity);
-    mix-blend-mode: multiply;
   }
   .v-tex {
     position: relative;
   }
-  .v-tex > svg.v-grain {
+  .v-tex > .v-grain {
     opacity: var(--grain-opacity-tex);
   }
   .v-tex > *:not(.v-grain) {
     position: relative;
   }
-  /* sobre tinta, el grano se mezcla con screen */
+  /* sobre tinta, puntos claros */
   .v-grain-on-ink {
-    mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* ── Escenario de tiles (src/components/stage) ───────────────── */
-  /* Track alto + panel sticky de 100dvh. overflow: clip (no hidden) para que
-     el escenario no sea contenedor de scroll. */
+  /* Track alto + panel sticky de 100lvh (estable: no cambia con la barra del
+     navegador). overflow: clip (no hidden) para que no sea contenedor de scroll. */
   .v-track {
     position: relative;
   }
   .v-stage {
     position: sticky;
     top: 0;
-    height: 100dvh;
+    height: 100lvh;
     overflow: clip;
     background: var(--color-blanco);
   }
@@ -545,7 +548,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    min-height: 100svh;
     padding-top: 104px;
     will-change: transform;
   }
@@ -632,6 +635,24 @@
     background: var(--color-terracota);
     transform-origin: left;
   }
+  /* Mobile (flujo nativo): "Ver todas" vuelve a la grilla */
+  .v-railbar-grid {
+    position: absolute;
+    top: 21px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--bar-ink);
+    color: var(--bar-bg);
+    cursor: pointer;
+    pointer-events: auto;
+  }
   .v-railbar-label {
     margin: 0;
     padding: 20px 56px 0 8px;
@@ -655,6 +676,21 @@
   .v-cue--panel {
     padding: 8px 0 32px;
   }
+  .v-cue-icon {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+  }
+  .v-cue-wheel {
+    position: absolute;
+    top: 5.4px;
+    left: 50%;
+    width: 2.2px;
+    height: 5.4px;
+    margin-left: -1.1px;
+    border-radius: 1.1px;
+    background: currentColor;
+  }
 
   /* Encabezado de marca de la tile abierta */
   .v-panel-head {
@@ -669,6 +705,112 @@
   .v-panel-wordmark {
     width: auto;
     height: 20px;
+  }
+
+  /* ── Mobile: flujo nativo (src/components/stage/MobileFlow.tsx) ── */
+  .v-mintro {
+    position: relative;
+  }
+
+  /* 100lvh: estable aunque aparezca o desaparezca la barra del navegador */
+  .v-mstage {
+    position: sticky;
+    top: 0;
+    height: 100lvh;
+    overflow: clip;
+    background: var(--color-blanco);
+  }
+  /* Grano de todo el escenario (no solo del hero) */
+  .v-mstage > .v-grain {
+    opacity: var(--grain-opacity-tex);
+  }
+  .v-mstage .v-hero-layer {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 1;
+  }
+  /* La pantalla mide siempre la pantalla completa y se escala (solo transform) */
+  .v-mphone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100lvh;
+    will-change: transform;
+  }
+  .v-mframe {
+    position: absolute;
+    inset: calc(var(--mframe, 14px) * -1);
+    border: var(--mframe, 14px) solid var(--color-tinta);
+    box-shadow: var(--shadow-tablet);
+    pointer-events: none;
+  }
+  .v-mscreen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-blanco);
+  }
+  .v-mcontent {
+    will-change: transform;
+  }
+  /* Perfil a tamaño de pantalla completa (dentro del celular se ve escalado) */
+  .v-mprofile .v-profile-in {
+    gap: 16px;
+    padding: 28px 20px 18px;
+  }
+  .v-mprofile .v-profile-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  .v-mprofile .v-profile-name {
+    font-size: 17px;
+  }
+  .v-mprofile .v-profile-role {
+    font-size: 14px;
+  }
+  .v-mprofile .v-profile-bio {
+    font-size: 15px;
+  }
+  .v-mprofile .v-hl-n {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .v-mprofile .v-hl-label {
+    font-size: 12px;
+  }
+  .v-mgrid {
+    height: 100lvh;
+  }
+  /* Última fila: el texto nunca queda debajo de la barra del navegador */
+  .v-mgrid .v-cell:nth-last-child(-n + 2) .v-cover {
+    padding-bottom: calc(100lvh - 100svh + clamp(8px, 6.5cqw, 28px));
+  }
+  .v-mphone-cue {
+    z-index: 3;
+    width: 100%;
+  }
+  /* Secciones en flujo, cada una con su tapa (la tile) */
+  .v-msec {
+    position: relative;
+  }
+  .v-mcover-wrap {
+    padding-top: 28px;
+  }
+  .v-mcover {
+    height: 34svh;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    container-type: size;
+    contain: paint;
+  }
+  .v-mbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 30;
+    height: 0;
   }
 
   /* Sin JS / antes de hidratar (mobile): el celular arranca debajo del pliegue */
@@ -749,7 +891,26 @@
   }
 }
 
+@keyframes v-mcover-open {
+  from {
+    scale: 0.6;
+    opacity: 0.35;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  /* Mobile: la tapa de cada sección "se abre" al entrar en pantalla (sin JS) */
+  @supports (animation-timeline: view()) {
+    .v-mcover {
+      animation: v-mcover-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
   .v-cue-wheel {
     animation: v-cue 1.6s var(--ease-in-out-soft) infinite;
   }
@@ -1047,12 +1208,14 @@
  * El fondo y el grano son del panel completo, así no hay cortes de textura
  * entre la sección, el encabezado y el margen del riel.
  */
-.v-panel-content > section {
+.v-panel-content > section,
+.v-msec > section {
   padding-top: 20px;
   border-top-width: 0;
   background-color: transparent;
 }
-.v-panel-content > section > .v-grain {
+.v-panel-content > section > .v-grain,
+.v-msec > section > .v-grain {
   display: none;
 }
 

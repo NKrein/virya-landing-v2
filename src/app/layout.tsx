@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Caveat, DM_Sans, Fraunces } from "next/font/google";
-import { GrainFilters } from "@/components/ui/GrainFilters";
 import { site } from "@/content";
 import "./globals.css";
 
@@ -46,7 +45,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fraunces.variable} ${dmSans.variable} ${caveat.variable}`}
     >
       <body>
-        <GrainFilters />
         {/* El recorte horizontal va en un wrapper, no en <body>: en <body> se propaga al viewport y bloquea el scroll. */}
         <div className="flex min-h-screen flex-col overflow-x-clip">{children}</div>
       </body>

@@ -17,7 +17,6 @@ export function Auditoria() {
         {/* Texto arriba, formulario debajo (también en desktop) */}
         <div className="flex flex-col gap-8">
           <div className="flex max-w-[640px] flex-col gap-3.5">
-            <p className="m-0 font-hand text-2xl leading-none">{c.kicker}</p>
             <h2 id="auditoria-title" className="v-disp v-h2 m-0">
               {c.titleLine1}
               <br />

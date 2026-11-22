@@ -22,6 +22,8 @@ type Props = {
   /** Mostrar la pista "deslizá o tocá una" (hasta la primera apertura) */
   hint: boolean;
   onGo: (k: number) => void;
+  /** Mobile (flujo nativo): botón "Ver todas" en la barra, vuelve a la grilla */
+  onGrid?: () => void;
 };
 
 /**
@@ -30,7 +32,7 @@ type Props = {
  * al fondo del panel, con el aviso de scroll debajo. Mobile: barra superior a
  * todo el ancho, con segmentos tipo historias + "N.º 02 · Workbook".
  */
-export function SectionRail({ active, visited, read, shown, onInk, hint, onGo }: Props) {
+export function SectionRail({ active, visited, read, shown, onInk, hint, onGo, onGrid }: Props) {
   const visibility = useTransform(shown, (v) => (v <= 0.01 ? "hidden" : "visible"));
   const fill = useTransform(read, (v) => Math.max(0.04, v));
   const current = active !== null ? openable[active] : null;
@@ -53,6 +55,15 @@ export function SectionRail({ active, visited, read, shown, onInk, hint, onGo }:
         </div>
         {/* En la grilla solo los segmentos (la pista ya está en la bio del perfil). */}
         {current && <p className="v-railbar-label">{fmt(copy.current, { n: current.n, label: current.label })}</p>}
+        {current && onGrid && (
+          <button type="button" className="v-railbar-grid" aria-label={copy.grid} onClick={onGrid}>
+            <svg aria-hidden="true" viewBox="0 0 20 20" width="18" height="18">
+              {[2, 8, 14].flatMap((x) =>
+                [2, 8, 14].map((y) => <rect key={`${x}-${y}`} x={x} y={y} width="4" height="4" rx="1" fill="currentColor" />),
+              )}
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Desktop: riel lateral, con el aviso de scroll en el mismo contenedor. */}

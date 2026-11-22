@@ -1,7 +1,6 @@
 /** N.º 01 — Auditoría gratis: newsletter + mini auditoría de Instagram (bloque tinta). */
 export const auditoria = {
-  folio: { number: "N.º 01", label: "Auditoría gratis", note: "empezá por acá" },
-  kicker: "antes de arrancar",
+  folio: { number: "N.º 01", label: "Auditoría gratis", note: "antes de arrancar" },
   titleLine1: "Sumate al newsletter ",
   titleAccent: "y llevate la mini auditoría gratis",
   bullets: [
